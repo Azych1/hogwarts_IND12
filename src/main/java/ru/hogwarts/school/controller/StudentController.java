@@ -8,7 +8,9 @@ import ru.hogwarts.school.service.StudentService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/student") //localhost:8080/student -> Collection<Student>
+                            //localhost:8080/student/{id} -> Student
+                            //localhost:8080/student/{id}/name -> String name
 public class StudentController {
 
     private final StudentService studentService;
