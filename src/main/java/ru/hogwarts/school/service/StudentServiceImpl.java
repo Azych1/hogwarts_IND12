@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.StudentAlreadyExistException;
 import ru.hogwarts.school.exception.StudentNotFoundException;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,64 +14,46 @@ import java.util.stream.Collectors;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final Map<Long, Student> repository = new HashMap<>();
+    private final StudentRepository repository;
 
-    private Long idCounter = 0L;
+    public StudentServiceImpl(StudentRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public Student create(Student student) {
 
-        if (repository.containsValue(student)) {
-            throw new StudentAlreadyExistException("Студент "+student+" уже есть в хранилище");
-        }
-
-        long id = ++idCounter;
-        student.setId(id);
-
-        repository.put(id, student);
-
-        return student;
+        return repository.save(student);
     }
 
     @Override
     public Student read(long id) {
-        Student student = repository.get(id);
 
-        if (student == null) {
-            throw new StudentNotFoundException("Студент с id "+id+" не найден в хранилище");
-        }
-
-        return student;
+        return repository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Студент с id " + id + " не найден в хранилище"));
     }
 
     @Override
     public Student update(Student student) {
 
-        if (!repository.containsKey(student.getId())) {
-            throw new StudentNotFoundException("Студент с id "+student.getId()+" не найден в хранилище");
-        }
+        read(student.getId());
 
-        repository.put(student.getId(), student);
-        return student;
+        return repository.save(student);
     }
 
     @Override
     public Student delete(long id) {
-        Student student = repository.remove(id);
 
-        if (student == null) {
-            throw new StudentNotFoundException("Студент с id "+id+" не найден в хранилище");
-        }
+        Student student = read(id);
+
+        repository.delete(student);
 
         return student;
-
     }
 
     @Override
     public Collection<Student> readByAge(int age) {
-        return repository.values().stream()
-                .filter(s -> s.getAge() == age)
-                .collect(Collectors.toUnmodifiableList());
+        return repository.findAllByAge(age);
     }
 
 

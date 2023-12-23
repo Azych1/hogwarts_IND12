@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.FacultyAlreadyExistException;
 import ru.hogwarts.school.exception.FacultyNotFoundException;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,66 +15,50 @@ import java.util.stream.Collectors;
 @Service
 public class FacultyServiceImpl implements FacultyService {
 
-    private final Map<Long, Faculty> repository = new HashMap<>();
+    private final FacultyRepository repository;
 
-    private Long idCounter = 0L;
+    public FacultyServiceImpl(FacultyRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public Faculty create(Faculty faculty) {
 
-        if (repository.containsValue(faculty)) {
-            throw new FacultyAlreadyExistException("Факультет " + faculty + " уже есть в хранилище");
-        }
+        return repository.save(faculty);
 
-        long id = ++idCounter;
-        faculty.setId(id);
-
-        repository.put(id, faculty);
-
-        return faculty;
     }
 
     @Override
     public Faculty read(long id) {
 
-        Faculty faculty = repository.get(id);
-
-        if (faculty == null) {
-            throw new FacultyNotFoundException("Факультет с id " + id + " не найден в хранилище");
-        }
-
-        return faculty;
+        return repository.findById(id)
+                .orElseThrow(() -> new FacultyNotFoundException("Факультет с id " + id + " не найден в хранилище"));
 
     }
 
     @Override
     public Faculty update(Faculty faculty) {
 
-        if (!repository.containsKey(faculty.getId())) {
-            throw new FacultyNotFoundException("Факультет с id " + faculty.getId() + " не найден в хранилище");
-        }
+        read(faculty.getId());
 
-        repository.put(faculty.getId(), faculty);
-        return faculty;
+        return repository.save(faculty);
 
     }
 
     @Override
     public Faculty delete(long id) {
-        Faculty faculty = repository.remove(id);
 
-        if (faculty == null) {
-            throw new FacultyNotFoundException("Факультет с id " + id + " не найден в хранилище");
-        }
+        Faculty faculty = read(id);
+
+        repository.delete(faculty);
 
         return faculty;
+
     }
 
     @Override
     public Collection<Faculty> getByColor(String color) {
-        return repository.values().stream()
-                .filter(f -> Objects.equals(f.getColor(), color))
-                .collect(Collectors.toUnmodifiableList());
+        return repository.findAllByColor(color);
     }
 
 
