@@ -22,7 +22,7 @@ public class FacultyServiceImpl implements FacultyService {
         return repository.save(faculty);
 
     }
-
+///////////////////////////////////////////////////////////
     @Override
     public Faculty read(long id) {
 
@@ -39,7 +39,7 @@ public class FacultyServiceImpl implements FacultyService {
         return repository.save(faculty);
 
     }
-
+////////////////////////////////////////////////////////////////
     @Override
     public Faculty delete(long id) {
 

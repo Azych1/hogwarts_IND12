@@ -19,25 +19,26 @@ public class FacultyController {
 
         this.facultyService = facultyService;
     }
-
+/////////////////////////////////////////////////////////////////////
     @PostMapping
     public Faculty create(@RequestBody Faculty faculty) {
 
         return facultyService.create(faculty);
     }
-
+///////////////////////////////////////////////////////////////////////
     @GetMapping("/{id}")
     public Faculty read(@PathVariable long id) {
 
         return facultyService.read(id);
     }
-
+///////////////////////////////////////////////////////////////////////
     @PutMapping
     public Faculty update(@RequestBody Faculty faculty) {
 
         return facultyService.update(faculty);
     }
 
+    /////////////////////////////////////////////////////////////
     @DeleteMapping("/{id}")
     public Faculty delete(@PathVariable long id) {
 
