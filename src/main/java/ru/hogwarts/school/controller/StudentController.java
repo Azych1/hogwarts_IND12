@@ -1,17 +1,20 @@
 package ru.hogwarts.school.controller;
 
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student") //localhost:8080/student -> Collection<Student>
-                            //localhost:8080/student/{id} -> Student
-                            //localhost:8080/student/{id}/name -> String name
+//localhost:8080/student/{id} -> Student
+//localhost:8080/student/{id}/name -> String name
 public class StudentController {
 
     private final StudentService studentService;
@@ -62,9 +65,18 @@ public class StudentController {
         return studentService.readByFacultyId(faculty_id);
     }
 
+    @GetMapping("/count")
+    public Integer getCountOfAllStudents() {
+        return studentService.getCountOfAllStudents();
+    }
 
+    @GetMapping("/average-age")
+    public Double getAverageAgeOfStudents() {
+        return studentService.getAverageAgeOfStudents();
+    }
 
-
-
-
+    @GetMapping("/last-five")
+    public Collection<Student> getLastFiveStudents() {
+        return studentService.getLastFiveStudents();
+    }
 }
