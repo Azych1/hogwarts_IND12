@@ -1,0 +1,5 @@
+SELECT COUNT(*) FROM student;
+
+SELECT AVG(age) FROM student;
+
+SELECT * FROM student ORDER BY id DESC LIMIT 5;
