@@ -6,9 +6,12 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.logging.Logger;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
+
+    private final Logger logger = Logger.getLogger(FacultyServiceImpl.class.toString());
 
     private final FacultyRepository repository;
 
@@ -18,6 +21,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty create(Faculty faculty) {
+        logger.info("Was invoked method to create faculty and return it");
 
         return repository.save(faculty);
 
@@ -25,6 +29,7 @@ public class FacultyServiceImpl implements FacultyService {
 ///////////////////////////////////////////////////////////
     @Override
     public Faculty read(long id) {
+        logger.info("Was invoked method to find faculty and return it");
 
         return repository.findById(id)
                 .orElseThrow(() -> new FacultyNotFoundException("Факультет с id " + id + " не найден в хранилище"));
@@ -33,6 +38,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty update(Faculty faculty) {
+        logger.info("Was invoked method to update faculty and return saved");
 
         read(faculty.getId());
 
@@ -42,6 +48,7 @@ public class FacultyServiceImpl implements FacultyService {
 ////////////////////////////////////////////////////////////////
     @Override
     public Faculty delete(long id) {
+        logger.info("Was invoked method to delete faculty and return deleted");
 
         Faculty faculty = read(id);
 
@@ -53,12 +60,14 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Collection<Faculty> getByColor(String color) {
+        logger.info("Was invoked method to find faculty by {color}");
 
         return repository.findAllByColor(color);
     }
 
     @Override
     public Collection<Faculty> readAllByNameIgnoreCaseOrColorIgnoreCase(String name, String color) {
+        logger.info("Was invoked method to find all faculties by name and color and return as Collection");
         return repository.findAllByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
