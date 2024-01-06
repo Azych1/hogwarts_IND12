@@ -32,4 +32,8 @@ public interface StudentService {
     Collection<String> getFilteredByName();
 
     Double getAllStudentsAvgAge();
+
+    void getStudentNames() throws InterruptedException;
+
+    void getStudentNamesSync() throws  InterruptedException;
 }

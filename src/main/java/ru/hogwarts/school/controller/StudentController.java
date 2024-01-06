@@ -96,4 +96,19 @@ public class StudentController {
     public Double getAllStudentsAvgAgeWithStream() {
         return studentService.getAllStudentsAvgAge();
     }
+
+    @GetMapping("parallel-thread")
+    public void getNames() throws InterruptedException {
+        studentService.getStudentNames();
+    }
+
+    @GetMapping("sync-thread")
+    public void getNamesSync() throws InterruptedException {
+        studentService.getStudentNamesSync();
+    }
+
+    @GetMapping("sync-thread2")
+    public void getNamesSyncWait() throws InterruptedException {
+        studentService.getStudentNamesSync();
+    }
 }

@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,8 @@ public class StudentServiceImpl implements StudentService {
     private final Logger logger = Logger.getLogger(StudentServiceImpl.class.toString());
 
     private final StudentRepository repository;
+
+    private boolean marker = false;
 
     public StudentServiceImpl(StudentRepository repository) {
         this.repository = repository;
@@ -117,6 +120,119 @@ public class StudentServiceImpl implements StudentService {
                 .average()
                 .orElse(0);
     }
+
+    public void getStudentNames() {
+        Thread thread1 = new Thread(() -> {
+            printName(3L);
+            printName(4L);
+        });
+        thread1.setName("Thread 1");
+        Thread thread2 = new Thread(() -> {
+            printName(5L);
+            printName(6L);
+        });
+        thread2.setName("Thread 2");
+        thread1.start();
+        thread2.start();
+
+        printName(1L);
+        printName(2L);
+    }
+
+    public void getStudentNamesSync() {
+        Thread thread1 = new Thread(() -> {
+            printNameSync(3L);
+            printNameSync(4L);
+        });
+        Thread thread2 = new Thread(() -> {
+            printNameSync(5L);
+            printNameSync(6L);
+        });
+        printNameSync(1L);
+        printNameSync(2L);
+        thread1.start();
+        thread2.start();
+
+
+    }
+
+
+
+
+    private void printName(Long id) {
+        //String color = getThreadColor();
+        String studentName = repository.getById(id).getName();
+        System.out.println(studentName); //System.out.println(color + studentName);
+    }
+
+    private synchronized void printNameSync(Long id) {
+        String studentName = repository.getById(id).getName();
+        System.out.println(studentName);
+    }
+
+    public void getStudentsNameWait() {
+        List<Student> allStudents = repository.findAll();
+        System.out.println(allStudents.get(0).getName());
+        System.out.println(allStudents.get(1).getName());
+
+        Thread thread1 = new Thread(() -> {
+            printNameSyncWait(2, 3, allStudents);
+        });
+
+        thread1.setName("Thread 1");
+        Thread thread2 = new Thread(() -> {
+            printNameSyncWait2(4, 5, allStudents);
+        });
+
+        thread1.setName("Thread 2");
+
+        thread2.start();
+        thread1.start();
+
+
+
+    }
+
+    private synchronized void printNameSyncWait(Integer id1, Integer id2, List<Student> students) {
+        while (marker) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            System.out.println(students.get(id1).getName());
+            System.out.println(students.get(id2).getName());
+            marker = true;
+            notify();
+        }
+    }
+
+    private synchronized void printNameSyncWait2(Integer id1, Integer id2, List<Student> students) {
+        while (!marker) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            System.out.println(students.get(id1).getName());
+            System.out.println(students.get(id2).getName());
+            //marker = true;
+            //notify();
+        }
+    }
+
+
+//    private String getThreadColor() {
+//        String color;
+//        if (Thread.currentThread().getName().equals("Thread 1")) {
+//            color = ThreadColor.ANSI_PURPLE;
+//        } else if (Thread.currentThread().getName().equals("Thread 2")) {
+//            color = ThreadColor.ANSI_BLUE;
+//        } else {
+//            color = ThreadColor.ANSI_GREEN;
+//        }
+//        return color;
+//    }
 
 
 }
