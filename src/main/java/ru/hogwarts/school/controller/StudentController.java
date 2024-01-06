@@ -1,7 +1,10 @@
 package ru.hogwarts.school.controller;
 
 
+import liquibase.pro.packaged.D;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -78,5 +81,19 @@ public class StudentController {
     @GetMapping("/last-five")
     public Collection<Student> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
+    }
+
+    @GetMapping("/filteredbyname")
+    public ResponseEntity<Collection<String>> getAllStudentsWithAName() {
+        Collection<String> stringCollection = studentService.getFilteredByName();
+        if (stringCollection.size() == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(stringCollection);
+    }
+
+    @GetMapping("/getallstudentsavgagewithstream")
+    public Double getAllStudentsAvgAgeWithStream() {
+        return studentService.getAllStudentsAvgAge();
     }
 }
