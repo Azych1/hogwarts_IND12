@@ -1,5 +1,7 @@
 package ru.hogwarts.school.controller;
 
+import liquibase.pro.packaged.S;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
@@ -19,19 +21,22 @@ public class FacultyController {
 
         this.facultyService = facultyService;
     }
-/////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////
     @PostMapping
     public Faculty create(@RequestBody Faculty faculty) {
 
         return facultyService.create(faculty);
     }
-///////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////
     @GetMapping("/{id}")
     public Faculty read(@PathVariable long id) {
 
         return facultyService.read(id);
     }
-///////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////
     @PutMapping
     public Faculty update(@RequestBody Faculty faculty) {
 
@@ -56,5 +61,8 @@ public class FacultyController {
         return facultyService.readAllByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
-
+    @GetMapping("/max-name")
+    public ResponseEntity<String> getFacultyNameWithMaxLength() {
+        return facultyService.getFacultyWithMaxLength();
+    }
 }
