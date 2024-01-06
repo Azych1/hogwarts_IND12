@@ -8,9 +8,12 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+
+    private final Logger logger = Logger.getLogger(StudentServiceImpl.class.toString());
 
     private final StudentRepository repository;
 
@@ -20,12 +23,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student create(Student student) {
+        logger.info("Was invoked method to create student and return it");
 
         return repository.save(student);
     }
 
     @Override
     public Student read(long id) {
+        logger.info("Was invoked method to find student and return it");
 
         return repository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Студент с id " + id + " не найден в хранилище"));
@@ -33,6 +38,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student update(Student student) {
+        logger.info("Was invoked method to update student and return saved");
 
         read(student.getId());
 
@@ -41,6 +47,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student delete(long id) {
+        logger.info("Was invoked method to delete student and return deleted");
 
         Student student = read(id);
 
@@ -51,36 +58,43 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Collection<Student> readByAge(int age) {
+        logger.info("Was invoked method to find student by {age}");
         return repository.findAllByAge(age);
     }
 
     @Override
     public Collection<Student> readByAgeBetween(int minAge, int maxAge) {
+        logger.info("Was invoked method to find students between {minAge} and {maxAge} and return as Collection");
         return repository.findByAgeBetween(minAge, maxAge);
     }
 
     @Override
     public Faculty readStudentFaculty(long studentId) {
+        logger.info("Was invoked method to find faculty by studentId");
         return read(studentId).getFaculty();
     }
 
     @Override
     public Collection<Student> readByFacultyId(long facultyId) {
+        logger.info("Was invoked method to find all faculties by facultyId and return as Collection");
         return repository.findAllByFaculty_id(facultyId);
     }
 
     @Override
     public Integer getCountOfAllStudents() {
+        logger.info("Was invoked method to get count of all students in repository");
         return repository.getCountOfAllStudents();
     }
 
     @Override
     public Double getAverageAgeOfStudents() {
+        logger.info("Was invoked method to get average of all students in repository");
         return repository.getAverageAgeOfStudents();
     }
 
     @Override
     public Collection<Student> getLastFiveStudents() {
+        logger.info("Was invoked method to find all faculties by name and color and return as Collection");
         return repository.getLastFiveStudents();
     }
 
